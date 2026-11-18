@@ -1,0 +1,736 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TAE❣TAE PLAYLIST</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Noto+Serif+KR:wght@500;900&family=Nanum+Gothic:wght@400;700;800&family=Nanum+Myeongjo:wght@400;700;800&family=Nanum+Pen+Script&family=Pinyon+Script&family=Mea+Culpa&family=Playfair+Display:ital,wght@0,500;0,700;1,500;1,700&family=Special+Elite&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy.css" rel="stylesheet">
+<style>
+/* ★ Dried Olive / Champe 폰트 파일(.woff2/.ttf)이 있으면 아래 주석을 풀고 경로를 넣으세요.
+@font-face{font-family:"Champe";src:url("Champe.woff2") format("woff2")}
+*/
+:root{--bg:#eef3fb;--d:#dbe5f7;--bl:#b9c9ea;--mid:#7e97cf;--deep:#3a4d7c;--ink:#43578a;--mut:#6f7fa6;--btn:#5873b3;
+--script:"Champe","Dried Olive","Pinyon Script","Playfair Display",cursive;
+color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+/* 다이아 체크: 같은 색, 무늬만 마름모 */
+body{margin:0;color:var(--ink);font:15px/1.6 "Noto Sans KR",system-ui,sans-serif;background-color:var(--bg);
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88'%3E%3Cpath d='M44 0L88 44L44 88L0 44Z' fill='%23dbe5f7'/%3E%3C/svg%3E");background-size:88px 88px}
+.wrap{max-width:1240px;margin:0 auto;padding:20px 16px 56px;display:grid;gap:22px;grid-template-columns:minmax(0,1fr) 380px;align-items:start}
+.cap,label,.hint,#st,.tpl small{font-family:"Special Elite","Noto Sans KR",monospace}
+
+.hd{grid-column:1/-1;text-align:center}
+.hb{width:70px;height:70px;display:block;margin:0 auto}
+h1{margin:0;font:400 clamp(34px,6.2vw,72px)/1.15 var(--script);color:var(--btn)}
+.dv{letter-spacing:.7em;color:var(--mid);margin:6px 0 2px;padding-left:.7em}
+
+.stage{position:sticky;top:calc(12px + env(safe-area-inset-top,0px))}
+.sc{position:relative;background:#fff;border:1.5px solid var(--bl);border-radius:18px;padding:18px;box-shadow:0 14px 32px rgba(88,115,179,.22)}
+.sc::before{content:"";position:absolute;inset:7px;border:1.5px dashed var(--bl);border-radius:12px;pointer-events:none}
+.tape{position:absolute;top:-13px;left:50%;width:120px;height:26px;transform:translateX(-50%) rotate(-3deg);background:rgba(185,201,234,.85);box-shadow:0 1px 3px rgba(58,77,124,.2)}
+.stk{position:absolute;left:-8px;top:14px;z-index:2;transform:rotate(-6deg);background:var(--btn);color:#fff;font:12px "Special Elite",monospace;padding:2px 12px;border-radius:6px}
+canvas{width:100%;height:auto;aspect-ratio:16/9;display:block;border-radius:8px;background:#000}
+.tr{display:flex;align-items:center;gap:12px;margin-top:14px;background:#fff;border:1.5px solid var(--bl);border-radius:99px;padding:6px 16px 6px 8px}
+.tr button{width:38px;height:38px;flex:none;border-radius:50%;border:0;background:var(--btn);color:#fff;font-size:14px;cursor:pointer}
+.tr input{flex:1;min-width:0;accent-color:var(--btn)}
+.tr span{font:13px "Special Elite",monospace;color:var(--mut);min-width:84px;text-align:right}
+
+.panel{display:grid;gap:18px}
+section.c{position:relative;background:#fff;border:1.5px solid var(--bl);border-radius:16px;padding:16px;box-shadow:0 8px 20px rgba(88,115,179,.14)}
+h2{margin:0 0 12px;font-size:16px;font-weight:700;color:var(--deep);display:flex;align-items:center;gap:8px}
+h2 b{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--btn);color:#fff;font-size:12px}
+label{display:grid;gap:4px;margin-bottom:10px;font-size:12.5px;color:var(--mut)}
+input[type=text],textarea,select{width:100%;font:14px "Noto Sans KR",sans-serif;color:var(--deep);background:#f6f8fd;border:1.5px solid var(--bl);border-radius:10px;padding:8px 10px}
+textarea{min-height:120px;resize:vertical}
+input[type=file]{font-size:12px;color:var(--mut)}
+input[type=color]{width:100%;height:36px;border:1.5px solid var(--bl);border-radius:10px;background:#f6f8fd;padding:2px}
+input[type=range]{accent-color:var(--btn)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+:focus-visible{outline:2px solid var(--btn);outline-offset:2px}
+
+.tpl{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+.tpl button{aspect-ratio:3/4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 4px;background:#fff;color:var(--deep);border:1.5px solid var(--bl);border-radius:10px;font:700 12px "Noto Sans KR",sans-serif;cursor:pointer;position:relative}
+.tpl .su{font-size:36px;line-height:1;color:var(--mid);font-weight:400}
+.tpl small{font-weight:400;font-size:10px;color:var(--mut);line-height:1.3;text-align:center}
+.tpl button:hover{background:#f3f6fc}
+.tpl button.on{border-color:var(--btn);background:#eef3fb;box-shadow:0 0 0 2px var(--bl)}
+.tpl button.on .su{color:var(--btn)}
+
+/* lyric sync */
+.sy{border-top:1.5px dashed var(--bl);margin-top:6px;padding-top:12px}
+.sy .hint{margin:0 0 10px}
+#slist{max-height:170px;overflow:auto;background:#f6f8fd;border:1.5px solid var(--bl);border-radius:10px;padding:6px;margin-bottom:10px;font-size:13px}
+#slist div{padding:3px 8px;border-radius:6px;color:var(--mut);display:flex;gap:8px}
+#slist div i{font:normal 11px "Special Elite",monospace;min-width:58px;color:var(--mid)}
+#slist div.ok{color:var(--deep)}
+#slist div.now{background:var(--btn);color:#fff}
+#slist div.now i{color:#fff}
+.btn.tap{padding:16px;font-size:16px}
+
+section.rc{padding:20px 16px 22px;margin-bottom:14px;border-radius:6px;border-style:dashed}
+section.rc::after{content:"";position:absolute;left:-1.5px;right:-1.5px;bottom:-14px;height:14px;background:linear-gradient(135deg,#fff 50%,transparent 50%) 0 0/14px 14px,linear-gradient(225deg,#fff 50%,transparent 50%) 0 0/14px 14px;filter:drop-shadow(0 4px 4px rgba(88,115,179,.12))}
+.rt{font:400 38px/1.2 var(--script);color:var(--btn);margin:0;display:block;text-align:center}
+.cap{text-align:center;font-size:12px;color:var(--mut);margin:4px 0 12px}
+.rc .hb{width:44px;height:44px;margin-bottom:4px}
+.dl{border-top:1.5px dashed var(--bl);margin:0 0 14px}
+.btn{width:100%;border:0;border-radius:99px;padding:11px;font:700 14px "Noto Sans KR",sans-serif;cursor:pointer;background:var(--btn);color:#fff;margin-bottom:8px}
+.btn.s{background:#fff;color:var(--deep);border:1.5px solid var(--bl)}
+.btn:disabled{opacity:.5;cursor:default}
+.ck{display:flex;gap:8px;align-items:center;font-size:12.5px;margin-bottom:8px}
+#st{font-size:12.5px;color:var(--btn);min-height:20px}
+.bar{height:42px;margin:12px 0 4px;background:repeating-linear-gradient(90deg,var(--deep) 0 2px,transparent 2px 5px,var(--deep) 5px 6px,transparent 6px 10px,var(--deep) 10px 13px,transparent 13px 16px)}
+.keep{font:400 17px var(--script);text-align:right;color:var(--btn);margin:0}
+.hint{font-size:11.5px;color:var(--mut);margin:10px 0 0;line-height:1.55}
+.ft{grid-column:1/-1;text-align:center;font:13px "Special Elite",monospace;color:var(--mut)}
+@media(max-width:900px){.wrap{grid-template-columns:1fr}.stage{position:static}}
+.mfh{margin:6px 0 8px;font-weight:700;color:var(--deep);font-size:14px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="hb" viewBox="0 0 100 96">
+<path d="M50 90C8 60 4 28 27 19c12-4 21 3 23 11 2-8 11-15 23-11 23 9 19 41-23 71z" fill="#b9c9ea"/>
+<path d="M50 80C16 55 13 31 30 25c10-3 17 3 20 11 3-8 10-14 20-11 17 6 14 30-20 55z" fill="none" stroke="#fff" stroke-width="1.6" stroke-dasharray="2.5 2.5"/>
+<g fill="#fff"><ellipse cx="44" cy="34" rx="3.2" ry="10" transform="rotate(-10 44 34)"/><ellipse cx="54" cy="33" rx="3.2" ry="10" transform="rotate(8 54 33)"/><circle cx="49" cy="50" r="7"/><ellipse cx="50" cy="61" rx="11" ry="9"/><circle cx="61" cy="64" r="3.5"/></g>
+</symbol></svg>
+
+<div class="wrap">
+<header class="hd">
+  <svg class="hb"><use href="#hb"/></svg>
+  <h1>TAE❣TAE PLAYLIST</h1>
+  <div class="dv" aria-hidden="true">♠ ♥ ♣ ♦</div>
+</header>
+
+<div class="stage">
+  <div class="sc">
+    <span class="tape"></span><span class="stk">now playing ♥</span>
+    <canvas id="c" width="1920" height="1080"></canvas>
+  </div>
+  <div class="tr">
+    <button id="pp" aria-label="재생">▶</button>
+    <input id="sk" type="range" min="0" max="100" step="0.1" value="0" aria-label="재생 위치">
+    <span id="tm">0:00 / 0:00</span>
+  </div>
+  <audio id="au" preload="auto"></audio>
+</div>
+
+<div class="panel">
+  <section class="c">
+    <h2><b>1</b>파일 넣기</h2>
+    <label>앨범 커버 (정사각형 권장)<input id="fc" type="file" accept="image/*"></label>
+    <label>노래 파일<input id="fa" type="file" accept="audio/*"></label>
+  </section>
+
+  <section class="c">
+    <h2><b>2</b>곡 정보</h2>
+    <label>제목<input type="text" data-k="title" placeholder="곡 제목"></label>
+    <label>아티스트<input type="text" data-k="artist" placeholder="아티스트"></label>
+    <label>한 줄 문구<input type="text" data-k="note" placeholder="좋아하는 가사 한 줄"></label>
+  </section>
+
+  <section class="c">
+    <h2><b>3</b>카드 고르기</h2>
+    <div class="tpl">
+      
+      <button data-t="card" class="on"><span class="su">♥</span>사이드 카드</button>
+      <button data-t="cine"><span class="su">♣</span>시네마</button>
+    </div>
+    <div class="row">
+      <label>레이아웃<select id="layout" data-k="layout"><option value="side">사이드 카드</option><option value="cine">시네마</option></select></label>
+      <label>제목 글꼴<select id="font" data-k="font"><option value="pre">프리텐다드</option><option value="nserif">노토 세리프</option><option value="ngo">나눔고딕</option><option value="nmj">나눔명조</option><option value="npen">나눔손글씨 펜</option><option value="paper">페이퍼로지</option><option value="play">플레이페어</option></select></label>
+      <label>가사 글꼴<select id="lfont" data-k="lfont"><option value="same">제목 글꼴과 같게</option><option value="pre">프리텐다드</option><option value="nserif">노토 세리프</option><option value="ngo">나눔고딕</option><option value="nmj">나눔명조</option><option value="npen">나눔손글씨 펜</option><option value="paper">페이퍼로지</option><option value="play">플레이페어</option></select></label>
+      <label>턴테이블 모양<select id="disc" data-k="disc"><option value="lp">LP 턴테이블</option><option value="photo">앨범 커버 원판</option></select></label>
+      <label>분위기<select id="mood" data-k="mood"><option value="blue">파스텔 블루</option><option value="cream">크림 옐로</option><option value="light">밝게</option><option value="dark">어둡게</option></select></label>
+      <label>소리 시각화<select id="vis" data-k="vis"><option value="bars">막대</option><option value="wave">파동</option><option value="none">끄기</option></select></label>
+    </div>
+    <div class="myf">
+      <p class="mfh">내 글꼴 추가</p>
+      <input id="mff" type="file" accept=".ttf,.otf,.woff,.woff2" hidden>
+      <button type="button" class="btn s" id="mfb">글꼴 파일 올리기 (ttf · otf · woff · woff2)</button>
+      <div class="row" id="mfa" hidden><button type="button" class="btn s" id="mft">제목에 적용</button><button type="button" class="btn s" id="mfl">가사에 적용</button></div>
+      <p class="hint" id="mfs" style="margin:0 0 12px">올린 글꼴은 위의 제목 글꼴 · 가사 글꼴 목록에도 추가돼요. 이 창에서만 쓸 수 있어서 새로고침하면 다시 올려야 해요.</p>
+    </div>
+    <div class="row">
+      <label>포인트 색 (직접 고르면 그 색 그대로)<input id="ac" type="color" value="#6f8fd8" data-k="accent"></label>
+      <label>커버 모서리<input type="range" min="0" max="120" value="24" data-k="radius"></label>
+    </div>
+    <div data-for="side">
+      <div class="row">
+        <label>뒷배경<select id="bgm" data-k="bgm"><option value="cover">앨범 커버 블러</option><option value="solid">단색</option><option value="grad">그라데이션 (하프톤)</option></select></label>
+        <label>휴대폰 상단바<select data-k="sb"><option value="on">보이기</option><option value="off">숨기기</option></select></label>
+      </div>
+      <div class="row">
+        <label>상단바 시간 (비우면 현재 시간)<input type="text" data-k="sbt" value="02:23" placeholder="예: 02:23" maxlength="8"></label>
+        <label>상단바 배터리 (예: 42%)<input type="text" data-k="sbb" value="42%" maxlength="8"></label>
+      </div>
+      <div class="row" id="bgc" hidden>
+        <label>색 1<input id="c1" type="color" value="#dfe6f3" data-k="c1"></label>
+        <label id="l2">색 2<input id="c2" type="color" value="#9fb3d9" data-k="c2"></label>
+        <label id="lg">그라데이션 방향<select data-k="gdir"><option value="v">위 → 아래</option><option value="h">왼쪽 → 오른쪽</option><option value="d">대각선</option><option value="r">중앙 → 가장자리</option></select></label>
+        <label id="lp">하프톤 시작 위치 (클수록 아래로)<input type="range" min="0" max="60" value="20" data-k="gs"></label>
+        <label id="ls">점 크기<input type="range" min="14" max="60" value="30" data-k="gsize"></label>
+      </div>
+      <p class="hint" style="margin:0 0 10px">분위기를 파스텔 블루·크림 옐로로 고르면 뒷배경과 단색/그라데이션 색이 한 번에 바뀌고, 글자색에도 같이 적용돼요. (시네마는 영화 느낌을 위해 항상 어둡게 유지돼요.)</p>
+    </div>
+    <div data-for="cine">
+      <div class="row">
+        <label>왼쪽 위 (페어명)<input type="text" data-k="pair" placeholder="예: 서태건 &amp; 백차영" maxlength="24"></label>
+        <label>오른쪽 위 (날짜)<input type="text" data-k="anni" placeholder="예: 2024.02.23" maxlength="24"></label>
+      </div>
+      <div class="row">
+        <label>제목 위 영문 문구<input type="text" data-k="eng" placeholder="예: Relaxing pop" maxlength="40"></label>
+        <label>영문 문구 글꼴<select data-k="engf"><option value="mea">미아 쿨파 · 스크립트</option><option value="playi">플레이페어 이탤릭</option></select></label>
+      </div>
+      <input id="mef" type="file" accept=".ttf,.otf,.woff,.woff2" hidden>
+      <button type="button" class="btn s" id="meb">영문 문구 글꼴 파일 올리기 (ttf · otf · woff · woff2)</button>
+      <p class="hint" id="mes" style="margin:0 0 12px">올린 글꼴은 "영문 문구 글꼴" 목록에만 추가되고, 제목·가사 등 다른 글꼴에는 영향을 주지 않아요.</p>
+      <p class="mfh">시네마 효과</p>
+      <div class="row" style="margin-bottom:6px">
+        <label class="ck"><input type="checkbox" data-fx="grade" checked>색감 보정</label>
+        <label class="ck"><input type="checkbox" data-fx="glow" checked>글로우</label>
+        <label class="ck"><input type="checkbox" data-fx="leak" checked>라이트 릭</label>
+        <label class="ck"><input type="checkbox" data-fx="sub" checked>자막 연출</label>
+      </div>
+      <p class="hint" style="margin:0 0 12px">필름 그레인 대신 부드러운 효과만 써서 영상으로 저장해도 화질이 덜 깨져요.</p>
+      <div class="row">
+        <label>배경 확대<input type="range" min="108" max="300" value="110" data-k="bz"></label>
+        <label>배경 좌우<input type="range" min="-100" max="100" value="0" data-k="bx"></label>
+        <label>배경 상하<input type="range" min="-100" max="100" value="0" data-k="by"></label>
+      </div>
+      <p class="hint" style="margin:0 0 10px">앨범 커버는 LP 가운데에 크게 들어가고, 같은 사진이 뒷배경에 은은하게 흐려져 깔려요. 시네마는 어두운 분위기로 고정돼요.</p>
+    </div>
+  </section>
+
+  <section class="c">
+    <h2><b>4</b>가사 (선택)</h2>
+    <label>[분:초] 뒤에 가사를 쓰면 그 시간에 나와요. 시간 없이 가사만 붙여 넣어도 돼요<textarea id="ly" data-k="lyr" placeholder="[00:12.50] 첫 번째 줄&#10;[00:18.00] 두 번째 줄"></textarea></label>
+    <label>.lrc / .srt 파일로 불러오기<input id="fl" type="file" accept=".lrc,.srt,.txt"></label>
+    <div class="sy">
+      <p class="hint">가사만 있을 때: 위 칸에 가사를 한 줄씩 붙여 넣고 시작을 누르세요. 노래가 나오면서 가사가 불릴 때마다 "지금 찍기"(또는 스페이스바)를 누르면 그 시간이 자동으로 들어가요.</p>
+      <button class="btn s" id="sbtn">⏱ 가사 시간 찍기 시작</button>
+      <div id="spanel" hidden>
+        <button class="btn tap" id="tap">지금 찍기 (Space)</button>
+        <div class="row"><button class="btn s" id="undo">↶ 한 줄 되돌리기</button><button class="btn s" id="fin">끝내기</button></div>
+      </div>
+      <div class="row"><button class="btn s" id="slrc">.lrc로 저장</button><button class="btn s" id="ssrt">.srt로 저장</button></div>
+    </div>
+  </section>
+
+  <section class="c rc">
+    <svg class="hb"><use href="#hb"/></svg>
+    <h2 class="rt">Export</h2>
+    <p class="cap">music receipt</p>
+    <div class="dl"></div>
+    <label>저장 형식<select id="fmt"><option value="mp4">영상 · MP4</option><option value="webm">영상 · WEBM</option></select></label>
+    <label>영상 화질<select id="qual"><option value="720">HD 720p (가볍고 안정적)</option><option value="1080">Full HD 1080p (고사양 기기용)</option></select></label>
+    <button class="btn" id="ev">저장하기</button>
+    <button class="btn s" id="cx" disabled>저장 취소</button>
+    <button class="btn s" id="fsv" disabled>지금까지 녹화된 걸로 바로 저장</button>
+    <button class="btn s" id="ei">이미지로 저장 (1920×1080 PNG)</button>
+    <label class="ck"><input type="checkbox" id="mute" checked>저장하는 동안 스피커 소리 끄기</label>
+    <div id="st"></div>
+    <div class="bar" aria-hidden="true"></div>
+    <p class="keep">make your music ♪</p>
+    <p class="hint">위에서 채운 커버, 곡 정보, 스타일, 가사가 모두 그대로 저장돼요. 영상은 노래 길이만큼 실시간으로 녹화되니 저장하는 동안 이 탭을 열어 두세요. 노래 없이 저장하면 8초 영상이 만들어져요. WEBM은 대부분의 브라우저에서 잘 되고, MP4는 크롬 최신 버전에서 잘 돼요. MP4가 안 되는 브라우저에서는 자동으로 WEBM으로 저장돼요. 저장 중 화면이 멈추거나 메모리 부족이 뜨면 HD 720p로 저장해 주세요.</p>
+  </section>
+</div>
+<div class="ft">♠ made with love ♥</div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s),cv=$('#c'),g=cv.getContext('2d'),W=1920,H=1080,au=$('#au');
+const F={pre:'"Pretendard","Noto Sans KR",sans-serif',nserif:'"Noto Serif KR",serif',ngo:'"Nanum Gothic",sans-serif',nmj:'"Nanum Myeongjo",serif',npen:'"Nanum Pen Script","Nanum Gothic",cursive',paper:'"Paperlogy","Noto Sans KR",sans-serif',play:'"Playfair Display","Noto Serif KR",serif'};
+const S={layout:'side',font:'pre',vis:'bars',mood:'blue',accent:'#6f8fd8',radius:24,title:'',artist:'',note:'',cover:null,ly:[],bgm:'cover',c1:'#dfe6f3',c2:'#9fb3d9',gdir:'v',gsize:30,sb:'on',sbt:'02:23',sbb:'42%',gs:20,pair:'',anni:'',lfont:'same',disc:'lp',eng:'',engf:'mea',bz:110,bx:0,by:0};
+const TP={card:{layout:'side',font:'pre',vis:'none',mood:'blue'},cine:{layout:'cine',font:'pre',vis:'none',mood:'dark'}};
+let ac,an,sg,rd,fq,td,pulse=0,ang=0,kS=1,ampS=7,recOn=false,busy=false,stopRec=null,cancelled=false,sync=null;
+const bc=document.createElement('canvas');bc.width=96;bc.height=54;
+const fmt=s=>{s=Math.max(0,s|0);return(s/60|0)+':'+String(s%60).padStart(2,'0')};
+const cf=(c,im,x,y,w,h)=>{const r=Math.max(w/im.width,h/im.height),sw=w/r,sh=h/r;c.drawImage(im,(im.width-sw)/2,(im.height-sh)/2,sw,sh,x,y,w,h)};
+const rr=(x,y,w,h,r)=>{g.beginPath();g.roundRect?g.roundRect(x,y,w,h,r):g.rect(x,y,w,h)};
+
+/* ---- inputs ---- */
+document.querySelectorAll('[data-k]').forEach(e=>e.addEventListener('input',()=>{
+  const k=e.dataset.k;
+  if(k==='lyr')parseLy(e.value);else S[k]=e.type==='range'?+e.value:e.value;
+  if(k==='accent')S.accM=true;
+  if(k==='mood'&&(S.mood==='blue'||S.mood==='cream')){const P=S.mood==='blue'?['#dfe6f3','#9fb3d9','#6f8fd8']:['#fdf3dc','#f2d28f','#d9a43f'];S.c1=P[0];S.c2=P[1];$('#c1').value=P[0];$('#c2').value=P[1];if(!S.accM){S.accent=P[2];$('#ac').value=P[2]}}
+  if(k==='bgm')bgUI();if(k==='layout')layoutUI();
+  document.querySelectorAll('.tpl button').forEach(b=>b.classList.remove('on'));
+}));
+document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{
+  Object.assign(S,TP[b.dataset.t]);
+  for(const k in TP[b.dataset.t])$('#'+k).value=S[k];layoutUI();
+  document.querySelectorAll('.tpl button').forEach(x=>x.classList.toggle('on',x===b));
+});
+function parseLy(t){
+  S.ly=t.split('\n').map(l=>{const m=l.match(/^\s*\[(\d+):(\d+(?:\.\d+)?)\]\s*(.*)$/);return m?{t:+m[1]*60+ +m[2],x:m[3]}:null}).filter(Boolean).sort((a,b)=>a.t-b.t);
+}
+const tsf=t=>{const m=t/60|0;return'['+String(m).padStart(2,'0')+':'+(t-m*60).toFixed(2).padStart(5,'0')+']'};
+const strip=l=>l.replace(/^(\s*\[\d+:\d+(?:\.\d+)?\])+\s*/,'').trim();
+function srt(t){
+  return t.replace(/\r/g,'').replace(/^\uFEFF/,'').split(/\n\s*\n/).map(b=>{
+    const l=b.trim().split('\n'),i=l.findIndex(x=>x.includes('-->'));if(i<0)return'';
+    const m=l[i].match(/(?:(\d+):)?(\d+):(\d+)[,.](\d+)/);if(!m)return'';
+    const s=(+m[1]||0)*3600+m[2]*60+ +m[3]+ +('0.'+m[4]);
+    const x=l.slice(i+1).join(' ').replace(/<[^>]+>/g,'').trim();
+    return x?tsf(s)+' '+x:'';
+  }).filter(Boolean).join('\n');
+}
+$('#fl').onchange=async e=>{
+  const f=e.target.files[0];if(!f)return;let t=await f.text();
+  if(t.includes('-->'))t=srt(t);
+  $('#ly').value=t;parseLy(t);$('#st').textContent=S.ly.length?'가사 '+S.ly.length+'줄을 불러왔어요.':'시간이 들어 있는 가사를 찾지 못했어요.';
+};
+$('#fc').onchange=e=>{
+  const f=e.target.files[0];if(!f)return;const im=new Image();
+  im.onload=()=>{S.cover=im;const b=bc.getContext('2d');cf(b,im,0,0,96,54);pick(im)};
+  im.src=URL.createObjectURL(f);
+};
+function pick(im){
+  if(S.accM)return;
+  const c=document.createElement('canvas');c.width=c.height=24;const x=c.getContext('2d');cf(x,im,0,0,24,24);
+  const d=x.getImageData(0,0,24,24).data;let R=0,G=0,B=0,w=0;
+  for(let i=0;i<d.length;i+=4){const mx=Math.max(d[i],d[i+1],d[i+2]),mn=Math.min(d[i],d[i+1],d[i+2]),s=mx?(mx-mn)/mx:0,k=s*s*(mx/255)+.001;R+=d[i]*k;G+=d[i+1]*k;B+=d[i+2]*k;w+=k}
+  const h=v=>Math.round(Math.min(255,v/w*1.1)).toString(16).padStart(2,'0');
+  S.accent='#'+h(R)+h(G)+h(B);$('#ac').value=S.accent;
+}
+$('#fa').onchange=e=>{const f=e.target.files[0];if(!f)return;au.src=URL.createObjectURL(f);au.load()};
+
+/* ---- audio ---- */
+function initA(){
+  if(ac)return;ac=new AudioContext();const s=ac.createMediaElementSource(au);
+  an=ac.createAnalyser();an.fftSize=2048;an.smoothingTimeConstant=.8;
+  sg=ac.createGain();rd=ac.createMediaStreamDestination();
+  s.connect(an);an.connect(sg);sg.connect(ac.destination);an.connect(rd);
+  fq=new Uint8Array(an.frequencyBinCount);td=new Uint8Array(an.fftSize);
+}
+function playErr(e){$('#st').textContent=e&&e.name==='NotSupportedError'?'이 노래 파일 형식은 이 브라우저에서 재생할 수 없어요. mp3나 m4a로 변환해서 다시 넣어 주세요.':'재생하지 못했어요. 화면을 한 번 터치한 뒤 다시 눌러 주세요.'}
+au.addEventListener('error',()=>{$('#st').textContent='노래 파일을 읽지 못했어요. mp3, m4a, wav 파일인지 확인해 주세요.'});
+$('#pp').onclick=()=>{
+  if(!au.src){$('#st').textContent='먼저 노래 파일을 넣어 주세요.';return}
+  if(!au.paused){au.pause();return}
+  try{initA()}catch(e){console.warn('Web Audio를 쓸 수 없어 시각화 없이 재생해요',e)}
+  if(ac&&ac.state==='suspended')ac.resume();
+  if(sg&&!busy)sg.gain.value=1;
+  $('#st').textContent='';au.play().catch(playErr);
+};
+au.addEventListener('play',()=>$('#pp').textContent='❚❚');
+au.addEventListener('pause',()=>$('#pp').textContent='▶');
+au.addEventListener('ended',()=>$('#pp').textContent='▶');
+$('#sk').oninput=e=>{if(au.duration)au.currentTime=e.target.value/100*au.duration};
+
+/* ---- lyric sync (직접 시간 찍기) : 가사 칸을 매번 직접 읽어서 다음 줄에 시간을 넣어요 ---- */
+const LB=/\r\n|[\n\r\u0085\u2028\u2029]/,ta=$('#ly'),HAS=/^\s*\[\d+:\d+(?:\.\d+)?\]/;
+function stampNext(t){
+  const L=ta.value.split(LB);
+  for(let n=0;n<L.length;n++){
+    if(!L[n].trim()||HAS.test(L[n]))continue;
+    L[n]=tsf(t)+' '+L[n].trim();sync.st.push(n);ta.value=L.join('\n');parseLy(ta.value);
+    ta.scrollTop=Math.max(0,(n+2)*21-ta.clientHeight);
+    return L.slice(n+1).some(x=>x.trim()&&!HAS.test(x))?1:2;
+  }
+  return 0;
+}
+$('#sbtn').onclick=async()=>{
+  if(!au.src){$('#st').textContent='먼저 노래 파일을 넣어 주세요.';return}
+  const L=ta.value.split(LB).map(strip);
+  if(!L.some(Boolean)){$('#st').textContent='가사를 한 줄씩 붙여 넣어 주세요.';return}
+  ta.value=L.join('\n');parseLy(ta.value);sync={st:[]};$('#spanel').hidden=false;
+  try{initA()}catch(e){}if(ac&&ac.state==='suspended')ac.resume();if(sg)sg.gain.value=1;au.currentTime=0;au.play().catch(playErr);
+  $('#st').textContent='노래에 맞춰 가사가 시작될 때마다 눌러 주세요.';
+};
+function tap(){
+  if(!sync)return;
+  const r=stampNext(Math.max(0,au.currentTime-.15));
+  $('#st').textContent=r===2?'마지막 줄까지 찍었어요! "끝내기"를 눌러 주세요.':r===0?'시간을 넣을 가사 줄이 더 없어요.':'';
+}
+$('#tap').onclick=tap;
+$('#undo').onclick=()=>{
+  if(!sync||!sync.st.length)return;const n=sync.st.pop(),L=ta.value.split(LB),m=(L[n]||'').match(/^\s*\[(\d+):(\d+(?:\.\d+)?)\]/);
+  if(m)au.currentTime=Math.max(0,+m[1]*60+ +m[2]-2);
+  L[n]=strip(L[n]||'');ta.value=L.join('\n');parseLy(ta.value);
+};
+$('#fin').onclick=()=>{if(!sync)return;au.pause();sync=null;$('#spanel').hidden=true;$('#st').textContent='가사 시간이 입력됐어요. 직접 고쳐도 돼요.'};
+document.addEventListener('keydown',e=>{
+  if(sync&&e.code==='Space'&&!/INPUT|TEXTAREA|SELECT|BUTTON/.test(document.activeElement.tagName)){e.preventDefault();tap()}
+});
+const srtT=t=>{const ms=Math.round(t*1000),P=(n,l)=>String(n).padStart(l,'0');return P(ms/3600000|0,2)+':'+P(ms/60000%60|0,2)+':'+P(ms/1000%60|0,2)+','+P(ms%1000,3)};
+function dl(kind){
+  if(!S.ly.length){$('#st').textContent='시간이 들어간 가사가 없어요.';return}
+  const t=kind==='lrc'?S.ly.map(o=>tsf(o.t)+' '+o.x).join('\n')
+    :S.ly.map((o,i)=>{const e=S.ly[i+1]?S.ly[i+1].t:Math.min(o.t+4,au.duration||o.t+4);return(i+1)+'\n'+srtT(o.t)+' --> '+srtT(Math.max(e,o.t+.5))+'\n'+o.x+'\n'}).join('\n');
+  save(new Blob([t],{type:'text/plain'}),'lyrics.'+kind);
+}
+$('#slrc').onclick=()=>dl('lrc');$('#ssrt').onclick=()=>dl('srt');
+
+/* ---- drawing ---- */
+function txt(s,x,y,size,wt,col,al,maxW){
+  if(!s)return;g.textAlign=al;g.textBaseline='alphabetic';g.fillStyle=col;
+  do{g.font=`${FW(wt)} ${size}px ${F[FOV||S.font]}`;size-=2}while(maxW&&g.measureText(s).width>maxW&&size>18);
+  g.fillText(s,x,y);
+}
+const FE={
+  mea:{f:'"Mea Culpa","Pinyon Script",cursive',s:'',z:104,w:400},
+  playi:{f:'"Playfair Display","Noto Serif KR",serif',s:'italic',z:76,w:500}};
+const FW=wt=>wt;let FOV=null;const lf=()=>S.lfont==='same'?null:S.lfont; /* 스크립트 글꼴은 굵기 하나뿐이라 가짜 굵기 방지 */
+function txe(s,x,y,maxW){ /* 제목 위 영문 문구 (전체 글꼴과 별개, 살짝 기울여 제목에 겹침) */
+  if(!s)return;const o=FE[S.engf]||FE.mea;let z=o.z;
+  g.save();g.translate(x,y);g.rotate(-.07);g.textAlign='center';g.textBaseline='alphabetic';g.fillStyle='#FFCE40';
+  do{g.font=`${o.s} ${o.w} ${z}px ${o.f}`;z-=2}while(maxW&&g.measureText(s).width>maxW&&z>20);
+  g.fillText(s,0,0);g.restore();
+}
+function txl(s,x,y,al,maxW){ /* 예고편 느낌의 상단 문구 */
+  if(!s)return;const u=s.toUpperCase();let z=28;g.textAlign=al;g.textBaseline='alphabetic';g.fillStyle='rgba(255,255,255,.55)';g.letterSpacing='4px';
+  do{g.font=`400 ${z}px "Pretendard","Noto Sans KR",sans-serif`;z-=2}while(maxW&&g.measureText(u).width>maxW&&z>16);
+  g.shadowColor='rgba(0,0,0,.55)';g.shadowBlur=10;g.fillText(u,x,y);g.shadowColor='transparent';g.shadowBlur=0;g.letterSpacing='0px';
+}
+function txs(s,x,y,size,wt,col,al,maxW){
+  if(!s)return;g.textAlign=al;g.textBaseline='alphabetic';
+  do{g.font=`${FW(wt)} ${size}px ${F[FOV||S.font]}`;size-=2}while(maxW&&g.measureText(s).width>maxW&&size>18);
+  g.lineJoin='round';g.lineWidth=5;g.strokeStyle='#000';g.strokeText(s,x,y);g.fillStyle=col;g.fillText(s,x,y);
+}
+function cover(x,y,s,k){
+  const ns=s*k,nx=x+(s-ns)/2,ny=y+(s-ns)/2,nr=S.radius*k,OFF=4000;
+  g.save();g.shadowColor='rgba(0,0,0,.4)';g.shadowBlur=60;g.shadowOffsetX=OFF;g.shadowOffsetY=24;g.fillStyle='#000';rr(nx-OFF,ny,ns,ns,nr);g.fill();g.restore();
+  g.save();rr(nx,ny,ns,ns,nr);g.clip();
+  if(S.cover)cf(g,S.cover,nx-1.5,ny-1.5,ns+3,ns+3);
+  else{const q=g.createLinearGradient(nx,ny,nx+ns,ny+ns);q.addColorStop(0,S.accent);q.addColorStop(1,'#1a1533');g.fillStyle=q;g.fillRect(nx,ny,ns,ns);
+    g.fillStyle='rgba(255,255,255,.85)';g.font=`700 ${ns*.35}px sans-serif`;g.textAlign='center';g.textBaseline='middle';g.fillText('♪',nx+ns/2,ny+ns/2)}
+  g.restore();
+}
+function vinyl(cx,cy,r,lab){const lr=lab===2?.46:.32;
+  g.save();g.translate(cx,cy);g.rotate(ang);
+  if(S.disc==='photo'&&S.cover){
+    g.beginPath();g.arc(0,0,r,0,7);g.save();g.clip();cf(g,S.cover,-r,-r,r*2,r*2);g.restore();
+    g.lineWidth=3;g.strokeStyle='rgba(0,0,0,.35)';g.beginPath();g.arc(0,0,r-1.5,0,7);g.stroke();
+    g.beginPath();g.arc(0,0,r*.04,0,7);g.fillStyle='#0c0b12';g.fill();g.restore();return;
+  }
+  g.beginPath();g.arc(0,0,r,0,7);g.fillStyle='#0c0b12';g.fill();
+  g.strokeStyle='rgba(255,255,255,.07)';g.lineWidth=2;
+  g.lineWidth=1.2;for(let q=r*(lr+.04),i=0;q<r-6;q+=r*.016,i++){g.strokeStyle='rgba(255,255,255,'+(i%9===0?.16:.05+(i%3)*.02)+')';g.beginPath();g.arc(0,0,q,0,7);g.stroke()}
+  g.beginPath();g.arc(0,0,r*lr,0,7);if(lab&&S.cover){g.save();g.clip();cf(g,S.cover,-r*lr,-r*lr,r*lr*2,r*lr*2);g.restore()}else{g.fillStyle=S.accent;g.fill()}
+  
+  g.beginPath();g.arc(0,0,r*.04,0,7);g.fillStyle='#0c0b12';g.fill();g.restore();
+}
+function lyAt(t){let l='';for(const o of S.ly){if(o.t<=t)l=o.x;else break}return l}
+
+/* 앨범 커버 확대 + 가우시안 블러 배경 (커버가 바뀔 때만 한 번 그려요) */
+const bgc=document.createElement('canvas');bgc.width=W;bgc.height=H;let bgk=null;
+function coverBg(){
+  if(bgk===S.cover)return;bgk=S.cover;
+  const x=bgc.getContext('2d'),z=1.6;x.clearRect(0,0,W,H);
+  if('filter' in x){x.filter='blur(58px)';cf(x,S.cover,W*(1-z)/2,H*(1-z)/2,W*z,H*z);x.filter='none'}
+  else{x.imageSmoothingEnabled=true;x.imageSmoothingQuality='high';x.drawImage(bc,0,0,W,H)}
+}
+/* 포인트 색 하나에서 요소별로 어우러지는 톤을 뽑아요 */
+let thk='',thv=null;
+function theme(dark){
+  const k=S.accent+dark;if(k===thk)return thv;thk=k;
+  const n=parseInt(S.accent.slice(1),16),r=(n>>16&255)/255,gg=(n>>8&255)/255,bb=(n&255)/255,mx=Math.max(r,gg,bb),mn=Math.min(r,gg,bb),d=mx-mn,l=(mx+mn)/2,sat=d?d/(1-Math.abs(2*l-1)):0;
+  let h=0;if(d){h=mx===r?((gg-bb)/d)%6:mx===gg?(bb-r)/d+2:(r-gg)/d+4;h=Math.round((h*60+360)%360)}
+  /* lh = 포인트 색의 밝기(0~100). 밝은 색이면 글자 톤도 같이 밝아져요 */
+  const s=Math.round(sat*100),lh=l*100,c=Math.min(s,70)/70,m=(a,b)=>Math.round(a+b*c),
+    cl=(v,a,b)=>Math.round(Math.min(b,Math.max(a,v))),q=(sa,li,al)=>`hsla(${h},${sa}%,${li}%,${al??1})`;
+  thv=dark?{title:q(m(15,45),cl(84+lh*.12,84,95)),artist:q(m(25,45),cl(70+lh*.2,70,86),.95),note:q(m(25,45),cl(58+lh*.22,58,76),.82),sb:q(m(15,40),cl(82+lh*.12,82,93)),ctrl:q(m(15,40),cl(82+lh*.12,82,94)),icon:q(m(25,25),12),lyric:q(m(25,50),cl(76+lh*.18,76,90)),fill:S.accent,track:q(m(15,25),90,.25)}
+   :{title:q(m(25,35),cl(12+lh*.3,13,36)),artist:q(m(22,33),cl(24+lh*.35,26,50)),note:q(m(20,28),cl(36+lh*.35,38,58),.9),sb:q(m(25,32),cl(15+lh*.3,16,38)),ctrl:q(m(25,35),cl(13+lh*.3,14,36)),icon:q(m(20,30),96),lyric:q(m(25,42),cl(18+lh*.3,19,40)),fill:S.accent,track:q(m(20,18),25,.2)};
+  return thv;
+}
+/* 사이드 카드 소리 시각화: 가운데 선을 기준으로 위아래 대칭인 가는 막대 */
+const vh=new Float32Array(62);let lvS=0;
+function vis2(x,cy,w,col,bars,live,T){
+  const N=62,pitch=w/N,bw=Math.max(5,pitch*.45),mh=40;g.fillStyle=col;
+  if(S.vis!=='bars'&&live){let tt=0;for(let j=0;j<td.length;j++){const d=(td[j]-128)/128;tt+=d*d}lvS+=(Math.min(1,Math.sqrt(tt/td.length)*3.5)-lvS)*.1}
+  for(let i=0;i<N;i++){
+    let v;
+    if(S.vis==='bars'){const f=i*47/(N-1),a=f|0,b=Math.min(47,a+1);v=bars[a]*(1-f+a)+bars[b]*(f-a)}
+    else{
+      const env=Math.pow(Math.sin(Math.PI*(.08+.84*i/(N-1))),.9);
+      if(live){const seg=(td.length/N)|0;let sm=0;for(let j=0;j<seg;j++){const d=(td[i*seg+j]-128)/128;sm+=d*d}v=Math.min(1,Math.pow(Math.min(1,Math.sqrt(sm/seg)*4.2),1.3)*env*(.55+.9*lvS))}
+      else v=(.25+.2*Math.sin(T*3+i*.5)*Math.sin(T*1.3+i*.21))*env;
+    }
+    if(S.vis==='bars'){ /* 막대: 아래는 일직선, 위쪽만 크게 움직여요 */
+      const t=live?Math.min(1,Math.pow(Math.max(0,(v-.28)/.62),1.5)*1.15):Math.min(1,v*1.35);vh[i]+=(t-vh[i])*(t>vh[i]?.85:.42);
+      const h=Math.max(3,vh[i]*100);rr(x+i*pitch+(pitch-bw)/2,cy+44-h,bw,h,[bw/2,bw/2,0,0]);
+    }else{
+      vh[i]+=(v-vh[i])*(v>vh[i]?.7:.2);
+      const h=Math.max(4,Math.min(1,vh[i])*mh*2);rr(x+i*pitch+(pitch-bw)/2,cy-h/2,bw,h,bw/2);
+    }
+    g.fill();
+  }
+}
+function layoutUI(){
+  document.querySelectorAll('[data-for]').forEach(e=>e.hidden=e.dataset.for!==S.layout);
+  const c=S.layout==='cine';
+  ['#mood','[data-k="artist"]','[data-k="note"]'].forEach(q=>{const e=document.querySelector(q);if(e)e.parentElement.hidden=c});
+}
+/* 시네마 배경: 커버를 살짝만 흐리게 (확대·좌우·상하 이동 가능) */
+const bgc2=document.createElement('canvas');bgc2.width=W;bgc2.height=H;let bgk2=null;
+function coverBg2(){
+  const k=S.cover.src+'|'+S.bz+'|'+S.bx+'|'+S.by;if(bgk2===k)return;bgk2=k;
+  const im=S.cover,x=bgc2.getContext('2d'),r=Math.max(W/im.width,H/im.height)*S.bz/100,dw=im.width*r,dh=im.height*r,
+    ox=(W-dw)/2+S.bx/100*(dw-W)/2,oy=(H-dh)/2+S.by/100*(dh-H)/2;
+  x.fillStyle='#000';x.fillRect(0,0,W,H);
+  if('filter' in x){x.filter='blur(12px)';x.drawImage(im,ox,oy,dw,dh);x.filter='none'}
+  else{const t=document.createElement('canvas');t.width=384;t.height=216;t.getContext('2d').drawImage(im,ox/5,oy/5,dw/5,dh/5);x.imageSmoothingQuality='high';x.drawImage(t,0,0,W,H)}
+}
+/* 필름 그레인: 움직이지 않는 잡음 무늬 */
+const gn=document.createElement('canvas');gn.width=gn.height=512;
+{const x=gn.getContext('2d'),d=x.createImageData(512,512);for(let i=0;i<d.data.length;i+=4){d.data[i]=d.data[i+1]=d.data[i+2]=Math.random()*255|0;d.data[i+3]=255}x.putImageData(d,0,0)}
+let gp=null,gf=0,gx=0,gy=0;
+function grain(){
+  gp=gp||g.createPattern(gn,'repeat');
+  g.save();g.globalAlpha=.2;g.globalCompositeOperation='overlay';g.translate(-gx,-gy);g.fillStyle=gp;g.fillRect(0,0,W+256,H+256);g.restore();
+}
+function bgUI(){const m=S.bgm;$('#bgc').hidden=m==='cover';['l2','lg','ls','lp'].forEach(i=>$('#'+i).hidden=m!=='grad')}
+/* 하프톤 그라데이션 (설정이 바뀔 때만 다시 그림) */
+const hc=document.createElement('canvas');hc.width=W;hc.height=H;let hk='';
+function halftone(){
+  const k=[S.c1,S.c2,S.gdir,S.gsize,S.gs].join();if(k===hk)return;hk=k;
+  const x=hc.getContext('2d'),sp=+S.gsize,md=Math.hypot(W/2,H/2);x.fillStyle=S.c1;x.fillRect(0,0,W,H);x.fillStyle=S.c2;
+  for(let j=0,y=0;y<=H+sp;j++,y+=sp/2)for(let px=j%2?sp/2:0;px<=W+sp;px+=sp){
+    const t0=S.gdir==='h'?px/W:S.gdir==='d'?(px/W+y/H)/2:S.gdir==='r'?Math.hypot(px-W/2,y-H/2)/md:y/H,g0=S.gs/100,r=sp*.56*Math.min(1,Math.max(0,(t0-g0)/(1-g0)));
+    if(r>.4){x.beginPath();x.arc(px,y,r,0,7);x.fill()}
+  }
+}
+/* 휴대폰 상단바: 신호 · 와이파이 · 시계 · 배터리 */
+function phone(ink){
+  g.save();g.fillStyle=ink;g.strokeStyle=ink;g.lineCap='round';
+  for(let i=0;i<4;i++){rr(140+i*16,116-(i+1)*10,10,(i+1)*10,3);g.fill()}
+  g.lineWidth=6;for(let i=1;i<=3;i++){g.beginPath();g.arc(256,118,i*12,-2.36,-.79);g.stroke()}
+  g.beginPath();g.arc(256,118,4,0,7);g.fill();
+  const d=new Date(),tm=S.sbt.trim()||String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'),bp=parseFloat(S.sbb),bl=isNaN(bp)?.82:Math.min(1,Math.max(0,bp/100));txt(tm,W/2,110,44,700,ink,'center',400);
+  g.lineWidth=4;rr(1700,78,76,40,10);g.stroke();rr(1706,84,Math.max(4,64*bl),28,6);g.fill();rr(1780,90,6,16,3);g.fill();
+  txt(S.sbb.trim(),1684,110,40,700,ink,'right',200);g.restore();
+}
+/* 플레이어 버튼: 하트 · 이전 · 재생/정지(동그라미) · 다음 · 더하기 */
+function ctrl(cx,cy,ink,ic,pl){
+  g.save();g.strokeStyle=ink;g.fillStyle=ink;g.lineWidth=4;g.lineJoin='round';g.lineCap='round';
+  const hx=cx-250;g.beginPath();g.moveTo(hx,cy+11);g.bezierCurveTo(hx-25,cy-3,hx-13,cy-20,hx,cy-8);g.bezierCurveTo(hx+13,cy-20,hx+25,cy-3,hx,cy+11);g.stroke();
+  const tri=(x,d)=>{g.beginPath();g.moveTo(x+d*12,cy-14);g.lineTo(x-d*8,cy);g.lineTo(x+d*12,cy+14);g.closePath();g.fill()};
+  tri(cx-120,1);g.fillRect(cx-136,cy-14,5,28);tri(cx+120,-1);g.fillRect(cx+131,cy-14,5,28);
+  g.beginPath();g.arc(cx,cy,46,0,7);g.fill();g.fillStyle=ic;
+  if(pl){g.fillRect(cx-13,cy-18,9,36);g.fillRect(cx+4,cy-18,9,36)}
+  else{g.beginPath();g.moveTo(cx-12,cy-19);g.lineTo(cx+19,cy);g.lineTo(cx-12,cy+19);g.closePath();g.fill()}
+  g.lineWidth=3.5;g.beginPath();g.arc(cx+250,cy,20,0,7);g.moveTo(cx+250-9,cy);g.lineTo(cx+250+9,cy);g.moveTo(cx+250,cy-9);g.lineTo(cx+250,cy+9);g.stroke();g.restore();
+}
+/* ---- 시네마 효과 (필름 그레인 대신): 색감 보정 · 글로우 · 라이트 릭 · 자막 연출 ---- */
+const FX={grade:true,glow:true,leak:true,sub:true};
+let gradeG=null;
+function fxGrade(){ /* 배경 색감: 검정을 살짝 띄워 매트하게 + 위쪽은 차가운 라일락, 아래쪽은 따뜻한 복숭아 톤 */
+  if(!FX.grade)return;
+  g.save();
+  g.globalCompositeOperation='lighten';g.fillStyle='rgb(24,21,32)';g.fillRect(0,0,W,H);
+  g.globalCompositeOperation='source-over';
+  if(!gradeG){gradeG=g.createLinearGradient(0,0,0,H);gradeG.addColorStop(0,'rgba(120,130,200,.07)');gradeG.addColorStop(.5,'rgba(128,128,128,0)');gradeG.addColorStop(1,'rgba(255,190,150,.07)')}
+  g.fillStyle=gradeG;g.fillRect(0,0,W,H);
+  g.restore();
+}
+function fxLeak(T){ /* 모서리에서 천천히 일렁이는 따뜻한 빛 번짐 */
+  if(!FX.leak)return;
+  const k=.85+.15*Math.sin(T*.35),x=W*(.9+.02*Math.sin(T*.2)),y=H*(.12+.03*Math.cos(T*.17));
+  g.save();g.globalCompositeOperation='screen';
+  let q=g.createRadialGradient(x,y,0,x,y,820);
+  q.addColorStop(0,'rgba(255,168,110,'+(.24*k)+')');q.addColorStop(.45,'rgba(255,120,150,'+(.09*k)+')');q.addColorStop(1,'rgba(255,120,150,0)');
+  g.fillStyle=q;g.fillRect(0,0,W,H);
+  q=g.createRadialGradient(W*.04,H*.95,0,W*.04,H*.95,620);
+  q.addColorStop(0,'rgba(150,130,255,'+(.13*k)+')');q.addColorStop(1,'rgba(150,130,255,0)');
+  g.fillStyle=q;g.fillRect(0,0,W,H);
+  g.restore();
+}
+function fxGlow(){ /* 글로우: 제목 주변이 살짝 번지는 은은한 빛 (화면을 복사하지 않아 가벼워요) */
+  if(!FX.glow)return;
+  g.save();g.globalCompositeOperation='screen';
+  const q=g.createRadialGradient(1190,520,60,1190,520,760);
+  q.addColorStop(0,'rgba(255,238,228,.15)');q.addColorStop(.5,'rgba(255,225,215,.06)');q.addColorStop(1,'rgba(255,225,215,0)');
+  g.fillStyle=q;g.fillRect(0,0,W,H);
+  g.restore();
+}
+document.querySelectorAll('[data-fx]').forEach(e=>e.addEventListener('change',()=>{FX[e.dataset.fx]=e.checked}));
+
+function draw(){
+  const dark=S.layout==='cine'||S.mood==='dark',ink=dark?'#fff':'#14122a',sub=dark?'rgba(255,255,255,.7)':'rgba(20,18,42,.65)';
+  const T=performance.now()/1000,playing=au.src&&!au.paused,dur=au.duration||0,cur=au.currentTime||0;
+  let bass=0;const bars=[],wave=[];
+  if(an&&au.src){
+    an.getByteFrequencyData(fq);an.getByteTimeDomainData(td);
+    for(let i=0;i<48;i++){const a=Math.floor(Math.pow(i/48,1.8)*300)+2,b=a+Math.max(2,i/6|0);let s=0;for(let j=a;j<b;j++)s+=fq[j];bars.push(s/(b-a)/255)}
+    for(let i=0;i<96;i++)wave.push((td[i*10]-128)/128);
+    bass=(fq[1]+fq[2]+fq[3]+fq[4]+fq[5])/5/255;
+  }else{
+    for(let i=0;i<48;i++)bars.push(.3+.2*Math.sin(T*2+i*.4)*Math.sin(T*.7+i*.13));
+    for(let i=0;i<96;i++)wave.push(Math.sin(T*3+i*.2)*.3);bass=.4;
+  }
+  pulse=pulse*.9+bass*.1;const k=Math.min(1.06,1+Math.max(0,bass-pulse)*.35);
+  if(playing)ang+=.015;
+
+  const pas=S.layout!=='cine'&&(S.mood==='blue'||S.mood==='cream'),pb=S.mood==='blue';
+  const bgm=S.layout==='side'?S.bgm:'cover';
+  if(bgm==='solid'){g.fillStyle=S.c1;g.fillRect(0,0,W,H)}else if(bgm==='grad'){halftone();g.drawImage(hc,0,0)}else if(S.cover){if(S.layout==='cine'){coverBg2();g.drawImage(bgc2,0,0)}else{coverBg();g.drawImage(bgc,0,0)}}
+  else{const q=g.createLinearGradient(0,0,W,H);q.addColorStop(0,pas?(pb?'#dfe8f8':'#ffefc8'):S.accent);q.addColorStop(1,pas?(pb?'#f6f9ff':'#fffaf0'):(dark?'#0d0b1f':'#f4f1ff'));g.fillStyle=q;g.fillRect(0,0,W,H)}
+  if(bgm==='cover'){const cn=S.layout==='cine';g.fillStyle=pas?(pb?'rgba(208,223,248,.86)':'rgba(255,243,214,.86)'):cn?(dark?'rgba(8,6,20,.5)':'rgba(255,255,255,.45)'):(dark?'rgba(8,6,20,.66)':'rgba(255,255,255,.62)');g.fillRect(0,0,W,H);const v=g.createRadialGradient(W/2,H/2,H*.35,W/2,H/2,W*.62);v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,dark?'rgba(0,0,0,.35)':'rgba(255,255,255,.3)');g.fillStyle=v;g.fillRect(0,0,W,H)}
+
+  if(S.layout==='cine')fxGrade();
+  const base=S.layout==='cine'?H-130:H;
+  g.fillStyle=S.accent;g.strokeStyle=S.accent;
+  if(S.layout==='side'||S.layout==='cine'){}else if(S.vis==='bars'){g.globalAlpha=.55;const bw=W/48;for(let i=0;i<48;i++){const h=Math.max(6,bars[i]*240);rr(i*bw+7,base-h,bw-14,h,6);g.fill()}g.globalAlpha=1}
+  else if(S.vis==='wave'){g.globalAlpha=.7;g.lineWidth=5;g.beginPath();wave.forEach((v,i)=>{const x=i/95*W,y=base-150+v*160;i?g.lineTo(x,y):g.moveTo(x,y)});g.stroke();g.globalAlpha=1}
+
+  const p=dur?cur/dur:0,line=lyAt(cur),second=line||S.note,tl=fmt(cur)+' / '+fmt(dur);
+  if(S.layout==='side'){
+    const sz=640,x0=110,y0=205,X=1150,Wd=630,py=587,th=theme(dark),hv=S.vis!=='none',dy=hv?-55:0,
+      kt=1+Math.min(.022,Math.max(0,bass-pulse)*.25),at=3+7*(1-Math.min(1,pulse*1.6));
+    kS+=(kt-kS)*(kt>kS?.22:.06);ampS+=(at-ampS)*.05;
+    const bob=Math.sin(T*1.1)*ampS;
+    vinyl(x0+sz,y0+sz/2+bob,sz*.49,1);cover(x0,y0+bob,sz,kS);
+    if(S.sb==='on')phone(th.sb);
+    txt(S.title||'곡 제목',X,377+dy,92,900,th.title,'left',Wd);
+    txt(S.artist||'아티스트',X,445+dy,40,500,th.artist,'left',Wd);
+    txt(S.note,X,495+dy,25,400,th.note,'left',Wd);
+    if(hv)vis2(X,518,Wd,th.fill,bars,!!(an&&au.src),T);
+    g.fillStyle=th.track;rr(X,py,Wd,6,3);g.fill();
+    g.fillStyle=th.fill;rr(X,py,Math.max(6,Wd*p),6,3);g.fill();
+    g.beginPath();g.arc(X+Wd*p,py+3,10,0,7);g.fill();
+    txt(fmt(cur),X,py+50,26,500,th.note,'left');txt(fmt(dur),X+Wd,py+50,26,500,th.note,'right');
+    ctrl(X+Wd/2,722,th.ctrl,th.icon,playing);
+    /* 가사: 새 줄이 시작되면 위로 스와이프되며 올라와요 */
+    let li=-1;S.ly.forEach((o,n)=>{if(o.t<=cur)li=n});
+    const a=li>=0?1-Math.pow(1-Math.min(1,(cur-S.ly[li].t)/.32),3):1,
+      L=n=>S.ly[n]?S.ly[n].x:'',
+      tl=(x,y,z,al)=>{g.globalAlpha=Math.max(0,Math.min(1,al));FOV=lf();txt(x,W/2,y,z,600,th.lyric,'center',1500);FOV=null;g.globalAlpha=1};
+    if(a<1)tl(L(li-1),955-60*a,50,1-a);
+    tl(L(li),1015-60*a,32+18*a,.5+.5*a);
+    tl(L(li+1),1075-60*a,32,.5*a);
+  }else{
+    const th=theme(dark),hv=S.vis!=='none',dy=hv?-90:0,cx=1190,Wd=1300,pw=1120,py=690;
+    vinyl(60,H/2,400,2); /* 좌측에 반만 보이는 LP, 커버는 가운데 라벨에만 */
+    txt(S.title||'곡 제목',cx,565+dy,132,900,th.title,'center',Wd);
+    txe(S.eng,cx,480+dy,1000);
+    if(hv)vis2(cx-pw/2,590,pw,th.fill,bars,!!(an&&au.src),T);
+    g.fillStyle=th.track;rr(cx-pw/2,py,pw,8,4);g.fill();
+    g.fillStyle=th.fill;rr(cx-pw/2,py,Math.max(8,pw*p),8,4);g.fill();
+    g.beginPath();g.arc(cx-pw/2+pw*p,py+4,12,0,7);g.fill();
+    txt(fmt(cur),cx-pw/2,py+52,30,500,th.note,'left');txt(fmt(dur),cx+pw/2,py+52,30,500,th.note,'right');
+    /* 영화 자막: 현재 줄은 노란색, 다음 줄은 흰색 (얇은 검은 테두리), 위로 올라오는 모션 */
+    let li=-1;S.ly.forEach((o,n)=>{if(o.t<=cur)li=n});
+    const a=li>=0?1-Math.pow(1-Math.min(1,(cur-S.ly[li].t)/.32),3):1,
+      L=n=>S.ly[n]?S.ly[n].x:'',
+      ts=(x,y,z,col,al)=>{g.globalAlpha=Math.max(0,Math.min(1,al));FOV=lf();txs(x,W/2,y,z,700,col,'center',1600);FOV=null;g.globalAlpha=1},
+      mix=u=>`rgb(255,${Math.round(255-49*u)},${Math.round(255-191*u)})`;
+    if(a<1)ts(L(li-1),868-60*a,56,'#FFCE40',1-a);
+    if(FX.sub){g.shadowColor='rgba(0,0,0,.55)';g.shadowBlur=16;g.shadowOffsetY=4}
+    ts(L(li),928-60*a,40+16*a,mix(a),FX.sub?.35+.65*a:1);
+    g.shadowColor='transparent';g.shadowBlur=0;g.shadowOffsetY=0;
+    ts(L(li+1),988-60*a,40,'#fff',a);
+    fxLeak(T);fxGlow();
+    /* 상하단 검은 바 + 예고편 느낌의 페어명 / 날짜 */
+    g.fillStyle='#000';g.fillRect(0,0,W,120);g.fillRect(0,H-120,W,120);
+    txl(S.pair,80,98,'left',760);txl(S.anni,W-80,98,'right',760);
+  }
+  if(document.activeElement!==$('#sk'))$('#sk').value=p*100;
+  $('#tm').textContent=fmt(cur)+' / '+fmt(dur);
+}
+function frame(){if(!recOn)draw();requestAnimationFrame(frame)}
+
+/* ---- export ---- */
+/* 탭이 가려져도 멈추지 않는 타이머(워커)로 저장 중 화면을 계속 그려요 */
+function ticker(fn){
+  try{
+    const w=new Worker(URL.createObjectURL(new Blob(['let ok=true;onmessage=()=>{ok=true};setInterval(()=>{if(ok){ok=false;postMessage(0)}},33)'],{type:'text/javascript'})));
+    w.onmessage=()=>{try{fn()}finally{w.postMessage(1)}};
+    return()=>w.terminate();
+  }
+  catch(e){const i=setInterval(fn,33);return()=>clearInterval(i)}
+}
+function save(b,n){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;document.body.appendChild(a);a.click();a.remove()}
+$('#ei').onclick=()=>cv.toBlob(b=>save(b,'music-frame.png'));
+$('#cx').onclick=()=>{cancelled=true;stopRec&&stopRec()};
+let forceFin=null;
+$('#fsv').onclick=()=>{if(stopRec)stopRec();setTimeout(()=>forceFin&&forceFin(),1500)};
+$('#ev').onclick=async()=>{
+  if(busy)return;busy=true;cancelled=false;$('#ev').disabled=true;$('#cx').disabled=false;
+  let rec=null,stopT=null,iv=null;
+  try{
+  const q=$('#qual').value==='1080',RW=q?1920:1280,RH=q?1080:720,rc=document.createElement('canvas');rc.width=RW;rc.height=RH;
+  const rx=rc.getContext('2d'),st=rc.captureStream(30),hasA=!!au.src;
+  if(hasA){initA();await ac.resume();rd.stream.getAudioTracks().forEach(t=>st.addTrack(t));sg.gain.value=$('#mute').checked?0:1;au.currentTime=0}
+  const want=$('#fmt').value,wl=['video/webm;codecs=vp8,opus','video/webm;codecs=vp9,opus','video/webm'],ml=['video/mp4;codecs=avc1.640028,mp4a.40.2','video/mp4;codecs=avc1,mp4a.40.2','video/mp4;codecs=avc1,opus','video/mp4'],mt=(want==='mp4'?ml.concat(wl):wl).find(m=>MediaRecorder.isTypeSupported(m)),ext=(mt||'').includes('mp4')?'mp4':'webm';
+  rec=new MediaRecorder(st,mt?{mimeType:mt,videoBitsPerSecond:q?4e6:2.5e6}:{videoBitsPerSecond:q?4e6:2.5e6});const ch=[];
+  rec.onerror=()=>stopRec&&stopRec();
+  rec.ondataavailable=e=>e.data.size&&ch.push(e.data);
+  let finish=null,stopAt=0;const done=new Promise(r=>{finish=r;rec.onstop=r});forceFin=()=>finish&&finish();$('#fsv').disabled=false;
+  stopRec=()=>{if(rec.state!=='inactive'){stopAt=performance.now();try{rec.requestData()}catch(e){}rec.stop()}};
+  const t0=performance.now();
+  recOn=true;let lastT=0,lastCT=-1,lastAdv=performance.now();
+  /* 이 타이머는 탭이 가려져도 멈추지 않아요: 끝나는 시점을 여기서 직접 확인해서 100%에서 멈추는 문제를 막아요 */
+  stopT=ticker(()=>{const n=performance.now();
+    if(stopAt){if(n-stopAt>4000)finish();return}
+    if(hasA){const d=au.duration;
+      if(au.ended||(isFinite(d)&&au.currentTime>=d-.05)){$('#st').textContent='마무리 중…';stopRec();return}
+      if(au.currentTime!==lastCT){lastCT=au.currentTime;lastAdv=n}else if(!au.paused&&n-lastAdv>4000&&isFinite(d)&&au.currentTime>d*.97){stopRec();return}
+      if(isFinite(d)&&n-t0>(d+20)*1000){stopRec();return}
+    }else if(n-t0>8000){stopRec();return}
+    if(n-lastT<28)return;lastT=n;draw();rx.drawImage(cv,0,0,RW,RH)});rec.start(1000);
+  if(hasA){au.onended=()=>stopRec();await au.play()}else setTimeout(stopRec,8000);
+  iv=setInterval(()=>{const p=hasA?au.currentTime/(au.duration||1):(performance.now()-t0)/8000;$('#st').textContent='녹화 중… '+Math.min(100,Math.round(p*100))+'%'},300);
+  await done;clearInterval(iv);stopT();recOn=false;au.onended=null;au.pause();if(sg)sg.gain.value=1;
+  const total=ch.reduce((a,c)=>a+c.size,0);
+  if(cancelled)$('#st').textContent='저장을 취소했어요.';
+  else if(!total)$('#st').textContent='녹화된 영상이 비어 있어요. 크롬이나 엣지 최신 버전에서 다시 시도해 주세요.';
+  else{save(new Blob(ch,{type:ext==='mp4'?'video/mp4':'video/webm'}),'music-frame.'+ext);$('#st').textContent=(want==='mp4'&&ext==='webm')?'이 브라우저는 MP4 녹화를 지원하지 않아 WEBM으로 저장했어요.':'저장 완료! 다운로드 폴더를 확인하세요.'}
+  }catch(err){
+    console.error(err);$('#st').textContent='저장 중 문제가 생겼어요: '+(err&&err.message?err.message:err);
+  }finally{
+    clearInterval(iv);stopT&&stopT();recOn=false;au.onended=null;if(sg)sg.gain.value=1;
+    if(rec&&rec.state!=='inactive')try{rec.stop()}catch(e){}
+    forceFin=null;$('#fsv').disabled=true;busy=false;$('#ev').disabled=false;$('#cx').disabled=true;
+  }
+};
+
+['400 20px','700 20px','900 20px'].forEach(w=>Object.values(F).forEach(f=>document.fonts&&document.fonts.load(`${w} ${f}`,'가나다Aa').catch(()=>{})));
+if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){$('#ev').disabled=true;$('#st').textContent='이 브라우저는 영상 저장을 지원하지 않아요. 크롬이나 엣지를 써 주세요.'}
+['"Mea Culpa"'].forEach(f=>document.fonts&&document.fonts.load('20px '+f,'Aa').catch(()=>{}));
+layoutUI();frame();
+
+/* ---- 내 글꼴 추가: 파일을 올리면 제목/가사 글꼴 목록에 들어가요 ---- */
+let mfN=0,mfLast=null;
+$('#mfb').onclick=()=>$('#mff').click();
+$('#mff').onchange=async e=>{
+  const f=e.target.files[0];e.target.value='';if(!f)return;const st=$('#mfs');
+  if(!/\.(ttf|otf|woff2?)$/i.test(f.name)){st.textContent='ttf, otf, woff, woff2 파일만 올릴 수 있어요.';return}
+  st.textContent='글꼴을 불러오는 중…';
+  try{
+    const nm=f.name.replace(/\.[^.]+$/,''),fam='MyFont'+(++mfN),face=new FontFace(fam,await f.arrayBuffer(),{weight:'100 900'});
+    await face.load();document.fonts.add(face);
+    const key='my'+mfN;F[key]='"'+fam+'","Noto Sans KR",sans-serif';
+    [$('#font'),$('#lfont')].forEach(sel=>{const o=document.createElement('option');o.value=key;o.textContent='내 글꼴 · '+nm;sel.appendChild(o)});
+    mfLast=key;$('#mfa').hidden=false;
+    st.textContent='“'+nm+'” 글꼴을 추가했어요. 아래 버튼이나 글꼴 목록에서 적용할 곳을 골라 주세요.';
+  }catch(err){st.textContent='이 글꼴 파일을 불러오지 못했어요. 다른 파일로 다시 시도해 주세요.'}
+};
+const useF=id=>{if(!mfLast)return;const sel=$(id);sel.value=mfLast;sel.dispatchEvent(new Event('input',{bubbles:true}))};
+$('#mft').onclick=()=>useF('#font');$('#mfl').onclick=()=>useF('#lfont');
+
+/* ---- 시네마 영문 문구 전용 글꼴 (제목/가사 글꼴과 따로 동작해요) ---- */
+let meN=0;
+$('#meb').onclick=()=>$('#mef').click();
+$('#mef').onchange=async e=>{
+  const f=e.target.files[0];e.target.value='';if(!f)return;const st=$('#mes');
+  if(!/\.(ttf|otf|woff2?)$/i.test(f.name)){st.textContent='ttf, otf, woff, woff2 파일만 올릴 수 있어요.';return}
+  st.textContent='글꼴을 불러오는 중…';
+  try{
+    const nm=f.name.replace(/\.[^.]+$/,''),fam='MyEng'+(++meN),face=new FontFace(fam,await f.arrayBuffer(),{weight:'100 900'});
+    await face.load();document.fonts.add(face);
+    const key='mye'+meN,sel=document.querySelector('[data-k=engf]'),o=document.createElement('option');
+    FE[key]={f:'"'+fam+'","Mea Culpa",cursive',s:'',z:96,w:400};
+    o.value=key;o.textContent='내 글꼴 · '+nm;sel.appendChild(o);sel.value=key;S.engf=key;
+    st.textContent='“'+nm+'” 글꼴을 영문 문구에 적용했어요. 목록에서 다른 글꼴로 바꿀 수도 있어요.';
+  }catch(err){st.textContent='이 글꼴 파일을 불러오지 못했어요. 다른 파일로 다시 시도해 주세요.'}
+};
+</script>
+</body>
+</html>
