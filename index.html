@@ -219,6 +219,7 @@ section.rc::after{content:"";position:absolute;left:-1.5px;right:-1.5px;bottom:-
     <p class="cap">music receipt</p>
     <div class="dl"></div>
     <label>저장 형식<select id="fmt"><option value="mp4">영상 · MP4</option><option value="webm">영상 · WEBM</option></select></label>
+    <label>영상 화질<select id="qual"><option value="720">HD 720p (가볍고 안정적)</option><option value="1080">Full HD 1080p (고사양 기기용)</option></select></label>
     <button class="btn" id="ev">저장하기</button>
     <button class="btn s" id="cx" disabled>저장 취소</button>
     <button class="btn s" id="ei">이미지로 저장 (1920×1080 PNG)</button>
@@ -226,7 +227,7 @@ section.rc::after{content:"";position:absolute;left:-1.5px;right:-1.5px;bottom:-
     <div id="st"></div>
     <div class="bar" aria-hidden="true"></div>
     <p class="keep">make your music ♪</p>
-    <p class="hint">위에서 채운 커버, 곡 정보, 스타일, 가사가 모두 그대로 저장돼요. 영상은 노래 길이만큼 실시간으로 녹화되니 저장하는 동안 이 탭을 열어 두세요. 노래 없이 저장하면 8초 영상이 만들어져요. WEBM은 대부분의 브라우저에서 잘 되고, MP4는 크롬 최신 버전에서 잘 돼요. MP4가 안 되는 브라우저에서는 자동으로 WEBM으로 저장돼요.</p>
+    <p class="hint">위에서 채운 커버, 곡 정보, 스타일, 가사가 모두 그대로 저장돼요. 영상은 노래 길이만큼 실시간으로 녹화되니 저장하는 동안 이 탭을 열어 두세요. 노래 없이 저장하면 8초 영상이 만들어져요. WEBM은 대부분의 브라우저에서 잘 되고, MP4는 크롬 최신 버전에서 잘 돼요. MP4가 안 되는 브라우저에서는 자동으로 WEBM으로 저장돼요. 저장 중 화면이 멈추거나 메모리 부족이 뜨면 HD 720p로 저장해 주세요.</p>
   </section>
 </div>
 <div class="ft">♠ made with love ♥</div>
@@ -299,9 +300,15 @@ function initA(){
   s.connect(an);an.connect(sg);sg.connect(ac.destination);an.connect(rd);
   fq=new Uint8Array(an.frequencyBinCount);td=new Uint8Array(an.fftSize);
 }
-$('#pp').onclick=async()=>{
+function playErr(e){$('#st').textContent=e&&e.name==='NotSupportedError'?'이 노래 파일 형식은 이 브라우저에서 재생할 수 없어요. mp3나 m4a로 변환해서 다시 넣어 주세요.':'재생하지 못했어요. 화면을 한 번 터치한 뒤 다시 눌러 주세요.'}
+au.addEventListener('error',()=>{$('#st').textContent='노래 파일을 읽지 못했어요. mp3, m4a, wav 파일인지 확인해 주세요.'});
+$('#pp').onclick=()=>{
   if(!au.src){$('#st').textContent='먼저 노래 파일을 넣어 주세요.';return}
-  initA();await ac.resume();au.paused?au.play():au.pause();
+  if(!au.paused){au.pause();return}
+  try{initA()}catch(e){console.warn('Web Audio를 쓸 수 없어 시각화 없이 재생해요',e)}
+  if(ac&&ac.state==='suspended')ac.resume();
+  if(sg&&!busy)sg.gain.value=1;
+  $('#st').textContent='';au.play().catch(playErr);
 };
 au.addEventListener('play',()=>$('#pp').textContent='❚❚');
 au.addEventListener('pause',()=>$('#pp').textContent='▶');
@@ -325,7 +332,7 @@ $('#sbtn').onclick=async()=>{
   const L=ta.value.split(LB).map(strip);
   if(!L.some(Boolean)){$('#st').textContent='가사를 한 줄씩 붙여 넣어 주세요.';return}
   ta.value=L.join('\n');parseLy(ta.value);sync={st:[]};$('#spanel').hidden=false;
-  initA();await ac.resume();au.currentTime=0;au.play();
+  try{initA()}catch(e){}if(ac&&ac.state==='suspended')ac.resume();if(sg)sg.gain.value=1;au.currentTime=0;au.play().catch(playErr);
   $('#st').textContent='노래에 맞춰 가사가 시작될 때마다 눌러 주세요.';
 };
 function tap(){
@@ -586,29 +593,41 @@ function frame(){if(!recOn)draw();requestAnimationFrame(frame)}
 /* ---- export ---- */
 /* 탭이 가려져도 멈추지 않는 타이머(워커)로 저장 중 화면을 계속 그려요 */
 function ticker(fn){
-  try{const w=new Worker(URL.createObjectURL(new Blob(['setInterval(()=>postMessage(0),16)'],{type:'text/javascript'})));w.onmessage=fn;return()=>w.terminate()}
-  catch(e){const i=setInterval(fn,16);return()=>clearInterval(i)}
+  try{const w=new Worker(URL.createObjectURL(new Blob(['setInterval(()=>postMessage(0),33)'],{type:'text/javascript'})));w.onmessage=fn;return()=>w.terminate()}
+  catch(e){const i=setInterval(fn,33);return()=>clearInterval(i)}
 }
 function save(b,n){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;document.body.appendChild(a);a.click();a.remove()}
 $('#ei').onclick=()=>cv.toBlob(b=>save(b,'music-frame.png'));
 $('#cx').onclick=()=>{cancelled=true;stopRec&&stopRec()};
 $('#ev').onclick=async()=>{
   if(busy)return;busy=true;cancelled=false;$('#ev').disabled=true;$('#cx').disabled=false;
-  const st=cv.captureStream(30),vt=st.getVideoTracks()[0],hasA=!!au.src;
+  let rec=null,stopT=null,iv=null;
+  try{
+  const q=$('#qual').value==='1080',RW=q?1920:1280,RH=q?1080:720,rc=document.createElement('canvas');rc.width=RW;rc.height=RH;
+  const rx=rc.getContext('2d'),st=rc.captureStream(30),hasA=!!au.src;
   if(hasA){initA();await ac.resume();rd.stream.getAudioTracks().forEach(t=>st.addTrack(t));sg.gain.value=$('#mute').checked?0:1;au.currentTime=0}
-  const want=$('#fmt').value,wl=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'],ml=['video/mp4;codecs=avc1.640028,mp4a.40.2','video/mp4;codecs=avc1,mp4a.40.2','video/mp4;codecs=avc1,opus','video/mp4'],mt=(want==='mp4'?ml.concat(wl):wl).find(m=>MediaRecorder.isTypeSupported(m)),ext=(mt||'').includes('mp4')?'mp4':'webm';
-  const rec=new MediaRecorder(st,{mimeType:mt,videoBitsPerSecond:8e6}),ch=[];
+  const want=$('#fmt').value,wl=['video/webm;codecs=vp8,opus','video/webm;codecs=vp9,opus','video/webm'],ml=['video/mp4;codecs=avc1.640028,mp4a.40.2','video/mp4;codecs=avc1,mp4a.40.2','video/mp4;codecs=avc1,opus','video/mp4'],mt=(want==='mp4'?ml.concat(wl):wl).find(m=>MediaRecorder.isTypeSupported(m)),ext=(mt||'').includes('mp4')?'mp4':'webm';
+  rec=new MediaRecorder(st,mt?{mimeType:mt,videoBitsPerSecond:q?4e6:2.5e6}:{videoBitsPerSecond:q?4e6:2.5e6});const ch=[];
+  rec.onerror=()=>stopRec&&stopRec();
   rec.ondataavailable=e=>e.data.size&&ch.push(e.data);
   const done=new Promise(r=>rec.onstop=r);
   stopRec=()=>{if(rec.state!=='inactive')rec.stop()};
   const t0=performance.now();
-  recOn=true;const stopT=ticker(()=>{draw();vt&&vt.requestFrame&&vt.requestFrame()});rec.start(1000);
+  recOn=true;let lastT=0;stopT=ticker(()=>{const n=performance.now();if(n-lastT<28)return;lastT=n;draw();rx.drawImage(cv,0,0,RW,RH)});rec.start(1000);
   if(hasA){au.onended=()=>setTimeout(stopRec,500);await au.play()}else setTimeout(stopRec,8000);
-  const iv=setInterval(()=>{const p=hasA?au.currentTime/(au.duration||1):(performance.now()-t0)/8000;$('#st').textContent='녹화 중… '+Math.min(100,Math.round(p*100))+'%'},300);
+  iv=setInterval(()=>{const p=hasA?au.currentTime/(au.duration||1):(performance.now()-t0)/8000;$('#st').textContent='녹화 중… '+Math.min(100,Math.round(p*100))+'%'},300);
   await done;clearInterval(iv);stopT();recOn=false;au.onended=null;au.pause();if(sg)sg.gain.value=1;
+  const total=ch.reduce((a,c)=>a+c.size,0);
   if(cancelled)$('#st').textContent='저장을 취소했어요.';
+  else if(!total)$('#st').textContent='녹화된 영상이 비어 있어요. 크롬이나 엣지 최신 버전에서 다시 시도해 주세요.';
   else{save(new Blob(ch,{type:ext==='mp4'?'video/mp4':'video/webm'}),'music-frame.'+ext);$('#st').textContent=(want==='mp4'&&ext==='webm')?'이 브라우저는 MP4 녹화를 지원하지 않아 WEBM으로 저장했어요.':'저장 완료! 다운로드 폴더를 확인하세요.'}
-  busy=false;$('#ev').disabled=false;$('#cx').disabled=true;
+  }catch(err){
+    console.error(err);$('#st').textContent='저장 중 문제가 생겼어요: '+(err&&err.message?err.message:err);
+  }finally{
+    clearInterval(iv);stopT&&stopT();recOn=false;au.onended=null;if(sg)sg.gain.value=1;
+    if(rec&&rec.state!=='inactive')try{rec.stop()}catch(e){}
+    busy=false;$('#ev').disabled=false;$('#cx').disabled=true;
+  }
 };
 
 ['400 20px','700 20px','900 20px'].forEach(w=>Object.values(F).forEach(f=>document.fonts&&document.fonts.load(`${w} ${f}`,'가나다Aa').catch(()=>{})));
