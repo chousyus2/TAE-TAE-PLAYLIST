@@ -653,11 +653,20 @@ $('#ev').onclick=async()=>{
   rec=new MediaRecorder(st,mt?{mimeType:mt,videoBitsPerSecond:q?4e6:2.5e6}:{videoBitsPerSecond:q?4e6:2.5e6});const ch=[];
   rec.onerror=()=>stopRec&&stopRec();
   rec.ondataavailable=e=>e.data.size&&ch.push(e.data);
-  const done=new Promise(r=>rec.onstop=r);
-  stopRec=()=>{if(rec.state!=='inactive')rec.stop()};
+  let finish=null,stopAt=0;const done=new Promise(r=>{finish=r;rec.onstop=r});
+  stopRec=()=>{if(rec.state!=='inactive'){stopAt=performance.now();try{rec.requestData()}catch(e){}rec.stop()}};
   const t0=performance.now();
-  recOn=true;let lastT=0;stopT=ticker(()=>{const n=performance.now();if(n-lastT<28)return;lastT=n;draw();rx.drawImage(cv,0,0,RW,RH)});rec.start(1000);
-  if(hasA){au.onended=()=>setTimeout(stopRec,500);await au.play()}else setTimeout(stopRec,8000);
+  recOn=true;let lastT=0,lastCT=-1,lastAdv=performance.now();
+  /* 이 타이머는 탭이 가려져도 멈추지 않아요: 끝나는 시점을 여기서 직접 확인해서 100%에서 멈추는 문제를 막아요 */
+  stopT=ticker(()=>{const n=performance.now();
+    if(stopAt){if(n-stopAt>4000)finish();return}
+    if(hasA){const d=au.duration;
+      if(au.ended||(isFinite(d)&&au.currentTime>=d-.05)){$('#st').textContent='마무리 중…';stopRec();return}
+      if(au.currentTime!==lastCT){lastCT=au.currentTime;lastAdv=n}else if(!au.paused&&n-lastAdv>4000&&isFinite(d)&&au.currentTime>d*.97){stopRec();return}
+      if(isFinite(d)&&n-t0>(d+20)*1000){stopRec();return}
+    }else if(n-t0>8000){stopRec();return}
+    if(n-lastT<28)return;lastT=n;draw();rx.drawImage(cv,0,0,RW,RH)});rec.start(1000);
+  if(hasA){au.onended=()=>stopRec();await au.play()}else setTimeout(stopRec,8000);
   iv=setInterval(()=>{const p=hasA?au.currentTime/(au.duration||1):(performance.now()-t0)/8000;$('#st').textContent='녹화 중… '+Math.min(100,Math.round(p*100))+'%'},300);
   await done;clearInterval(iv);stopT();recOn=false;au.onended=null;au.pause();if(sg)sg.gain.value=1;
   const total=ch.reduce((a,c)=>a+c.size,0);
